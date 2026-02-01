@@ -36,15 +36,27 @@ See `docs/00-prerequisites.md` for detailed installation instructions.
 ```
 blue-green-local/
 ├── CLAUDE.md                    # Project instructions and decisions
-├── docs/                        # Documentation
-│   └── 00-prerequisites.md      # Installation guide
-├── scripts/                     # Utility scripts
-│   └── verify-prerequisites.sh  # Verify tool installations
-├── k8s/                         # Kubernetes manifests (to be created)
-├── services/                    # Application services (to be created)
+├── docs/
+│   ├── 00-prerequisites.md      # Installation guide
+│   ├── 01-cluster-setup.md      # Cluster setup guide
+│   └── 02-progress.md           # Current progress and status
+├── scripts/
+│   ├── verify-prerequisites.sh  # Verify tool installations
+│   ├── setup-cluster.sh         # Create cluster + monitoring
+│   └── teardown-cluster.sh      # Delete cluster
+├── k8s/
+│   ├── cluster/
+│   │   ├── kind-config.yaml     # Kind cluster configuration
+│   │   └── namespaces.yaml      # Namespace definitions
 │   ├── backend/
-│   ├── jwt-service/
-│   └── frontend/
+│   │   ├── deployment.yaml      # Backend deployment
+│   │   └── service.yaml         # Backend service
+│   └── ingress/
+│       └── ingress.yaml         # Ingress routing rules
+├── services/
+│   ├── backend/                 # ✅ Complete
+│   ├── jwt-service/             # ⏳ Pending
+│   └── frontend/                # ⏳ Pending
 └── helm/                        # Helm charts (to be created)
 ```
 
@@ -122,7 +134,34 @@ Consisting of:
 | Testing | Live traffic + load testing | Realistic validation with some manual checks |
 | Dockerfiles | Multi-stage, optimized | Production-ready from day 1, not an afterthought |
 | Health checks | Liveness + Readiness + Startup probes | Essential for k8s orchestration and blue-green |
-| Metrics | Prometheus + Grafana | Observability built-in, critical for deployment visibility | 
+| Metrics | Prometheus + Grafana | Observability built-in, critical for deployment visibility |
+
+## Current Status
+
+See `docs/02-progress.md` for detailed progress tracking.
+
+### Quick Status
+
+| Component | Status |
+|-----------|--------|
+| Kind Cluster | ✅ Running (1 control-plane + 2 workers) |
+| Nginx Ingress | ✅ Deployed |
+| Prometheus + Grafana | ✅ Deployed |
+| Backend v1 | ✅ Deployed (2 replicas) |
+| PostgreSQL | ⏳ Pending |
+| JWT Service | ⏳ Pending |
+| Frontend | ⏳ Pending |
+| Blue-Green (Phase 1) | ⏳ Pending |
+| Argo Rollouts (Phase 2) | ⏳ Pending |
+
+### Access Points
+
+| What | URL/Command |
+|------|-------------|
+| Backend API | `http://localhost/api/` |
+| Calculate | `curl -X POST http://localhost/api/calculate -H "Content-Type: application/json" -d '{"amount":100}'` |
+| Grafana | `kubectl port-forward -n monitoring svc/grafana 3000:80` → http://localhost:3000 |
+| Prometheus | `kubectl port-forward -n monitoring svc/prometheus-server 9090:80` → http://localhost:9090 | 
 
 
 

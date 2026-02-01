@@ -1,0 +1,19 @@
+# Namespaces for the blue-green deployment project
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app
+  labels:
+    purpose: application
+    project: blue-green-learning
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    purpose: observability
+    project: blue-green-learning
